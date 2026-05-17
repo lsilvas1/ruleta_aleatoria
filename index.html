@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruleta de Preguntas Scrum</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #0891b2);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 320px;
+      height: 320px;
+    }
+
+    .ruleta {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 10px solid white;
+      background: conic-gradient(
+        #facc15,
+        #f97316,
+        #ef4444,
+        #ec4899,
+        #8b5cf6,
+        #3b82f6,
+        #06b6d4,
+        #10b981,
+        #facc15
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 3s ease-out;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .centro {
+      width: 180px;
+      height: 180px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .flecha {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 50px;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 15px;
+      background: #facc15;
+      color: black;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .pregunta {
+      margin-top: 30px;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 20px;
+      width: 80%;
+      max-width: 700px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ruleta de Preguntas Scrum</h1>
+<h1>🎡 Analisis de Sistemas I UMG🎡</h1>
+
+  <div class="contenedor">
+    <div class="flecha">▼</div>
+
+    <div class="ruleta" id="ruleta">
+      <div class="centro">SCRUM</div>
+    </div>
+  </div>
+
+  <button onclick="girarRuleta()">GIRAR</button>
+
+  <div class="pregunta" id="pregunta">
+    Presiona GIRAR para obtener una pregunta
+  </div>
+
+  <button onclick="mostrarRespuesta()" style="background:#22c55e; margin-top:20px;">
+    Mostrar respuesta correcta
+  </button>
+
+  <div class="pregunta" id="respuesta" style="margin-top:20px; background:#d1fae5;">
+    La respuesta aparecerá aquí
+  </div>
+
+  <script>
+    const preguntas = [
+      {
+        pregunta: "¿Qué es Scrum y para qué se utiliza?",
+        respuesta: "Scrum es un marco de trabajo utilizado para gestionar y desarrollar proyectos de manera iterativa e incremental."
+      },
+      {
+        pregunta: "¿Cuáles son los roles principales en Scrum?",
+        respuesta: "Los roles principales son Product Owner, Scrum Master y Development Team."
+      },
+      {
+        pregunta: "¿Qué responsabilidades tiene el Scrum Master?",
+        respuesta: "El Scrum Master facilita Scrum, elimina impedimentos y ayuda al equipo a seguir las prácticas ágiles."
+      },
+      {
+        pregunta: "¿Qué hace el Product Owner?",
+        respuesta: "El Product Owner administra y prioriza el Product Backlog según el valor del negocio."
+      },
+      {
+        pregunta: "¿Qué es un Sprint?",
+        respuesta: "Es un período corto de tiempo donde el equipo desarrolla un incremento funcional del producto como una pieza de lego."
+      },
+      {
+        pregunta: "¿Qué es el Sprint Backlog?",
+        respuesta: "Es el conjunto de tareas seleccionadas del Product Backlog para trabajarse durante un Sprint."
+      },
+      {
+        pregunta: "¿Qué es el Product Backlog?",
+        respuesta: "Es una lista priorizada de requisitos, funcionalidades y mejoras del producto."
+      },
+      {
+        pregunta: "¿Qué es la Daily Scrum?",
+        respuesta: "Es una reunión diaria de 15 minutos para revisar avances y obstáculos."
+      },
+      {
+        pregunta: "¿Qué sucede en la Sprint Review?",
+        respuesta: "El equipo presenta el incremento desarrollado y recibe retroalimentación."
+      },
+      {
+        pregunta: "¿Qué es la Sprint Retrospective?",
+        respuesta: "Es una reunión para analizar mejoras y lecciones aprendidas del Sprint."
+      },
+      {
+        pregunta: "¿Qué significa Incremento en Scrum?",
+        respuesta: "Es el resultado funcional y terminado que se entrega al final de un Sprint una pieza de lego "
+      },
+      {
+        pregunta: "¿Qué es una Historia de Usuario?",
+        respuesta: "Es una descripción breve de una funcionalidad desde la perspectiva del usuario."
+      },
+      {
+        pregunta: "¿Qué ventajas tiene Scrum?",
+        respuesta: "Mejora la colaboración, flexibilidad, calidad y entrega continua de valor."
+      },
+      {
+        pregunta: "¿Cuanto tiempo puede durar un sprint ?",
+        respuesta: "Puede durar de 1 a 4 semanas."
+      }
+    ];
+
+    let rotacion = 0;
+    let preguntaActual = null;
+
+    function girarRuleta() {
+      const ruleta = document.getElementById('ruleta');
+      const pregunta = document.getElementById('pregunta');
+
+      const indice = Math.floor(Math.random() * preguntas.length);
+
+      rotacion += 1440 + Math.floor(Math.random() * 360);
+
+      ruleta.style.transform = `rotate(${rotacion}deg)`;
+
+      setTimeout(() => {
+        preguntaActual = preguntas[indice];
+        pregunta.innerText = preguntaActual.pregunta;
+        document.getElementById('respuesta').innerText = 'La respuesta aparecerá aquí';
+      }, 3000);
+    }
+
+    function mostrarRespuesta() {
+      const respuesta = document.getElementById('respuesta');
+
+      if (preguntaActual) {
+        respuesta.innerText = preguntaActual.respuesta;
+      } else {
+        respuesta.innerText = 'Primero debes girar la ruleta';
+      }
+    }
+  </script>
+
+</body>
+</html>
